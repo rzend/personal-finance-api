@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: gestao-financeira-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/finance_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - JWT_SECRET=gestaoFinanceiraSecretKey2024VeryLongSecretForSecurityMinimum256Bits
+      - JWT_EXPIRATION=86400000
+      - BRASILAPI_URL=https://brasilapi.com.br
+      - GPT4ALL_API_URL=http://gpt4all:5000
+    depends_on:
+      - db
+      - gpt4all
+    networks:
+      - finance-network
+
+  db:
+    image: postgres:15
+    container_name: finance-db
+    environment:
+      - POSTGRES_DB=finance_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - finance-network
+
+  gpt4all:
+    build: ./gpt4all-service
+    container_name: gpt4all-api
+    ports:
+      - "5000:5000"
+    environment:
+      - GPT4ALL_MODEL=orca-mini-3b-gguf2-q4_0.gguf
+      - GPT4ALL_MODELS_DIR=/app/models
+    volumes:
+      - gpt4all_models:/app/models
+    networks:
+      - finance-network
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+networks:
+  finance-network:
+    driver: bridge
+
+volumes:
+  db_data:
+  gpt4all_models:

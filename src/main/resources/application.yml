@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: gestao-financeira
+  
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/finance_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# Custom Admin Configuration
+admin:
+  email: ${ADMIN_EMAIL:admin@gestao.com}
+  default-password: ${ADMIN_PASSWORD:admin123}
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:gestaoFinanceiraSecretKey2024VeryLongSecretForSecurityMinimum256Bits}
+  expiration: ${JWT_EXPIRATION:86400000}
+
+# External APIs
+apis:
+  brasilapi:
+    url: ${BRASILAPI_URL:https://brasilapi.com.br}
+
+    # GPT4All Configuration
+gpt4all:
+  api:
+    url: ${GPT4ALL_API_URL:http://localhost:5000}
+
+# Springdoc OpenAPI
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+
+# Logging
+logging:
+  level:
+    root: INFO
+    br.com.gestao.financeira: DEBUG
+    org.springframework.security: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Server
+server:
+  port: ${PORT:8080}
+
+  
