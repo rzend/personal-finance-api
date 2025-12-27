@@ -4,15 +4,20 @@ API de Gestão Financeira Pessoal desenvolvida com **Arquitetura Hexagonal** e *
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Java 17**
-- **Spring Boot 3.2.1**
-- **PostgreSQL**: Banco de dados relacional
-- **Spring Security + JWT**: Autenticação e Autorização
-- **Swagger / OpenAPI**: Documentação da API
-- **Apache POI**: Geração de relatórios Excel
-- **iTextPDF**: Geração de relatórios PDF
-- **Caffeine**: Cache para performance
-- **Spring Retry**: Resiliência em integrações externas
+### Backend Principal (Java)
+- **Java 17** & **Spring Boot 3.2.1**
+- **Arquitetura Hexagonal** (Clean Architecture)
+- **Spring Security** + **JWT**: Segurança robusta
+- **PostgreSQL**: Persistência de dados
+- **OpenAPI (Swagger)**: Documentação viva
+- **Apache POI** & **iTextPDF**: Relatórios gerenciais
+- **Caffeine Cache** & **Spring Retry**: Performance e Resiliência
+- **Lombok**: Produtividade
+
+### Microserviço de IA (Python)
+- **Python 3.11+**
+- **FastAPI**: Framework web de alta performance
+- **GPT4All**: Inferência de LLMs locais (Privacy-first)
 
 ## 🏗️ Arquitetura
 
@@ -26,34 +31,55 @@ O projeto segue a **Arquitetura Hexagonal** (Ports and Adapters), estruturada em
 
 - Java 17+
 - Maven
+- Python 3.11+ (para o serviço de Chatbot)
 - Docker & Docker Compose (Opcional, para ambiente containeirizado)
 
 ## 🏃 Como Executar
 
 ### Usando Docker (Recomendado)
 
-Para subir a aplicação e o banco de dados PostgreSQL automaticamente:
+Para subir a aplicação completa (API Java + Banco + Chatbot Python) automaticamente:
 
 ```bash
 docker-compose up -d --build
 ```
 
 A API estará disponível em: `http://localhost:8080`
+O serviço de Chatbot (interno) estará em: `http://localhost:5000`
 
 ### Executando Localmente
 
-1. Suba o banco de dados (pode usar o docker-compose apenas para o DB se preferir):
+1. **Banco de Dados**: Suba o banco PostgreSQL:
    ```bash
    docker-compose up -d db
    ```
-2. Instale as dependências e faça o build:
+
+2. **Serviço de Chatbot (Python)**:
+   Em um terminal separado, navegue até a pasta `gpt4all-service`:
+   ```bash
+   cd gpt4all-service
+   pip install -r requirements.txt
+   python main.py
+   ```
+
+3. **API Backend (Java)**:
+   Em outro terminal, na raiz do projeto:
    ```bash
    ./mvnw clean install
-   ```
-3. Execute a aplicação:
-   ```bash
    ./mvnw spring-boot:run
    ```
+
+## 🤖 Chatbot IA (`/chat`)
+
+O projeto inclui um assistente virtual inteligente capaz de responder perguntas sobre finanças e analisando o contexto (embora a integração completa com os dados do usuário esteja em desenvolvimento).
+
+**Arquitetura do Chatbot:**
+- **Microserviço Python**: Desenvolvido com **FastAPI** e **GPT4All**.
+- **Modelos Locais**: Utiliza modelos LLM (Large Language Models) que rodam localmente na CPU, sem enviar dados para APIs externas (Privacidade total).
+- **Comunicação**: A API Java se comunica com o serviço Python via HTTP REST.
+
+### Endpoints do Chatbot
+- `POST /chat/enviar`: Envia uma mensagem para o assistente e recebe a resposta.
 
 ## 🔌 Endpoints Principais
 
@@ -69,6 +95,14 @@ A documentação completa pode ser acessada via **Swagger UI** após iniciar a a
 - `POST /transacoes`: Criar nova receita ou despesa
 - `PUT /transacoes/{id}`: Atualizar transação
 - `DELETE /transacoes/{id}`: Remover transação
+
+### 💳 Saldo (`/saldo-conta`)
+- `GET /saldo-conta`: Consulta de saldo atualizado do usuário
+
+### 👨‍👩‍👧‍👦 Famílias (`/familias`)
+- `POST /familias`: Criar um novo grupo familiar
+- `POST /familias/{id}/membros`: Adicionar membros à família
+- `GET /familias/meus-membros`: Listar integrantes da família
 
 ### 📊 Análise (`/analise`)
 - `GET /analise/despesas`: Relatórios analíticos de despesas por categoria
