@@ -22,10 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class AnaliseDespesasService {
 
-    private final br.com.gestao.financeira.dominio.services.TransacaoService transacaoService;
+    private final TransacaoService transacaoService;
     private final CotacaoRepository cambioPort;
 
-    public AnaliseDespesasService(br.com.gestao.financeira.dominio.services.TransacaoService transacaoService,
+    public AnaliseDespesasService(TransacaoService transacaoService,
             CotacaoRepository cambioPort) {
         this.transacaoService = transacaoService;
         this.cambioPort = cambioPort;

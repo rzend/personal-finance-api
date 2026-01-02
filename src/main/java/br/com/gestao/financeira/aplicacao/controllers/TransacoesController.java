@@ -2,11 +2,14 @@ package br.com.gestao.financeira.aplicacao.controllers;
 
 import br.com.gestao.financeira.aplicacao.dto.TransacaoCriacaoDto;
 import br.com.gestao.financeira.aplicacao.dto.TransacaoDto;
+import br.com.gestao.financeira.dominio.entity.Usuario;
 import br.com.gestao.financeira.dominio.enums.CategoriaTransacao;
 import br.com.gestao.financeira.dominio.entity.Transacao;
+import br.com.gestao.financeira.dominio.enums.PerfilUsuario;
 import br.com.gestao.financeira.dominio.services.CambioService;
 import br.com.gestao.financeira.dominio.services.TransacaoService;
 import br.com.gestao.financeira.dominio.repository.UsuarioRepository;
+import br.com.gestao.financeira.dominio.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -17,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 
 /**
@@ -32,12 +36,12 @@ public class TransacoesController {
     private final CambioService cambioServico;
     private final UsuarioRepository usuarioRepositorio;
 
-    private final br.com.gestao.financeira.dominio.services.UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
     public TransacoesController(TransacaoService transacoesServico,
             CambioService cambioServico,
             UsuarioRepository usuarioRepositorio,
-            br.com.gestao.financeira.dominio.services.UsuarioService usuarioService) {
+            UsuarioService usuarioService) {
         this.transacoesServico = transacoesServico;
         this.cambioServico = cambioServico;
         this.usuarioRepositorio = usuarioRepositorio;
@@ -109,10 +113,10 @@ public class TransacoesController {
         return ResponseEntity.noContent().build();
     }
 
-    private void validarAcesso(Long usuarioAlvoId, java.security.Principal principal) {
-        br.com.gestao.financeira.dominio.entity.Usuario solicitante = usuarioService
+    private void validarAcesso(Long usuarioAlvoId, Principal principal) {
+        Usuario solicitante = usuarioService
                 .buscarPorEmail(principal.getName());
-        br.com.gestao.financeira.dominio.entity.Usuario alvo = usuarioService.detalharUsuario(usuarioAlvoId);
+        Usuario alvo = usuarioService.detalharUsuario(usuarioAlvoId);
 
         // 1. O próprio usuário
         if (solicitante.getId().equals(alvo.getId())) {
@@ -120,12 +124,12 @@ public class TransacoesController {
         }
 
         // 2. Administrador (MASTER)
-        if (solicitante.getPerfil() == br.com.gestao.financeira.dominio.enums.PerfilUsuario.MASTER) {
+        if (solicitante.getPerfil() == PerfilUsuario.MASTER) {
             return;
         }
 
         // 3. Gestor da familia do usuario alvo
-        if (solicitante.getPerfil() == br.com.gestao.financeira.dominio.enums.PerfilUsuario.GESTOR &&
+        if (solicitante.getPerfil() == PerfilUsuario.GESTOR &&
                 solicitante.getFamilia() != null &&
                 alvo.getFamilia() != null &&
                 solicitante.getFamilia().getId().equals(alvo.getFamilia().getId())) {

@@ -1,5 +1,6 @@
 package br.com.gestao.financeira.aplicacao.controllers;
 
+import br.com.gestao.financeira.aplicacao.dto.ResultadoImportacaoDto;
 import br.com.gestao.financeira.aplicacao.dto.UsuarioCriacaoDto;
 import br.com.gestao.financeira.aplicacao.dto.UsuarioDto;
 import br.com.gestao.financeira.dominio.entity.Usuario;
@@ -90,9 +91,9 @@ public class UsuariosController {
     @PostMapping("/importar-excel")
     @Operation(summary = "Importar usuários via Excel", description = "Importa usuários em massa a partir de planilha Excel")
     @PreAuthorize("hasAuthority('ROLE_MASTER')")
-    public ResponseEntity<br.com.gestao.financeira.aplicacao.dto.ResultadoImportacaoDto> importarExcel(
+    public ResponseEntity<ResultadoImportacaoDto> importarExcel(
             @RequestParam("arquivo") MultipartFile arquivo) {
-        br.com.gestao.financeira.aplicacao.dto.ResultadoImportacaoDto resultado = importacaoServico.importar(arquivo);
+        ResultadoImportacaoDto resultado = importacaoServico.importar(arquivo);
         return ResponseEntity.ok(resultado);
     }
 

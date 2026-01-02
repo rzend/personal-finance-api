@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Serviço de domínio responsável pela gestão de transações financeiras.
@@ -73,7 +75,7 @@ public class TransacaoService {
         return transacaoRepository.save(existente);
     }
 
-    private <T> void atualizarCampo(T valor, java.util.function.Consumer<T> setter) {
+    private <T> void atualizarCampo(T valor, Consumer<T> setter) {
         if (valor != null) {
             setter.accept(valor);
         }
@@ -139,7 +141,7 @@ public class TransacaoService {
     }
 
     private <T> void adicionarFiltro(List<Predicate> predicates, T valor,
-            java.util.function.Function<T, Predicate> regra) {
+            Function<T, Predicate> regra) {
         if (valor != null) {
             predicates.add(regra.apply(valor));
         }

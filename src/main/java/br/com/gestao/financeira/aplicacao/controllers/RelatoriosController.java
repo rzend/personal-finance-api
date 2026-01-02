@@ -1,7 +1,9 @@
 package br.com.gestao.financeira.aplicacao.controllers;
 
 import br.com.gestao.financeira.aplicacao.dto.ParametrosRelatorio;
+import br.com.gestao.financeira.dominio.enums.PerfilUsuario;
 import br.com.gestao.financeira.dominio.repository.RelatorioRepository;
+import br.com.gestao.financeira.dominio.services.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.time.LocalDate;
 
 /**
@@ -22,10 +25,10 @@ import java.time.LocalDate;
 public class RelatoriosController {
 
         private final RelatorioRepository relatorioPort;
-        private final br.com.gestao.financeira.dominio.services.UsuarioService usuarioService;
+        private final UsuarioService usuarioService;
 
         public RelatoriosController(RelatorioRepository relatorioPort,
-                        br.com.gestao.financeira.dominio.services.UsuarioService usuarioService) {
+                        UsuarioService usuarioService) {
                 this.relatorioPort = relatorioPort;
                 this.usuarioService = usuarioService;
         }
@@ -82,7 +85,7 @@ public class RelatoriosController {
                                 .body(excel);
         }
 
-        private void validarAcesso(Long usuarioAlvoId, java.security.Principal principal) {
+        private void validarAcesso(Long usuarioAlvoId, Principal principal) {
                 br.com.gestao.financeira.dominio.entity.Usuario solicitante = usuarioService
                                 .buscarPorEmail(principal.getName());
                 br.com.gestao.financeira.dominio.entity.Usuario alvo = usuarioService.detalharUsuario(usuarioAlvoId);
@@ -93,12 +96,12 @@ public class RelatoriosController {
                 }
 
                 // 2. Administrador (MASTER)
-                if (solicitante.getPerfil() == br.com.gestao.financeira.dominio.enums.PerfilUsuario.MASTER) {
+                if (solicitante.getPerfil() == PerfilUsuario.MASTER) {
                         return;
                 }
 
                 // 3. Gestor da familia do usuario alvo
-                if (solicitante.getPerfil() == br.com.gestao.financeira.dominio.enums.PerfilUsuario.GESTOR &&
+                if (solicitante.getPerfil() == PerfilUsuario.GESTOR &&
                                 solicitante.getFamilia() != null &&
                                 alvo.getFamilia() != null &&
                                 solicitante.getFamilia().getId().equals(alvo.getFamilia().getId())) {

@@ -5,8 +5,10 @@ import br.com.gestao.financeira.dominio.enums.PerfilUsuario;
 import br.com.gestao.financeira.dominio.repository.UsuarioRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -16,14 +18,14 @@ public class AdminUserSeeder implements CommandLineRunner {
 
     private static final Logger logger = LoggerFactory.getLogger(AdminUserSeeder.class);
 
-    @org.springframework.beans.factory.annotation.Value("${admin.default-password:admin123}")
+    @Value("${admin.default-password:admin123}")
     private String defaultPassword;
 
-    @org.springframework.beans.factory.annotation.Value("${admin.email:admin@gestao.com}")
+    @Value("${admin.email:admin@gestao.com}")
     private String adminEmail;
 
     private final UsuarioRepository usuarioRepository;
-    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public AdminUserSeeder(UsuarioRepository usuarioRepository,
             org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {

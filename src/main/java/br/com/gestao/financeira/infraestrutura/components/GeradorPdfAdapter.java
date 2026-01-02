@@ -3,6 +3,7 @@ package br.com.gestao.financeira.infraestrutura.components;
 import br.com.gestao.financeira.aplicacao.dto.ParametrosRelatorio;
 import br.com.gestao.financeira.dominio.entity.Transacao;
 import br.com.gestao.financeira.dominio.repository.RelatorioRepository;
+import br.com.gestao.financeira.dominio.services.TransacaoService;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -25,11 +26,11 @@ public class GeradorPdfAdapter implements RelatorioRepository {
     private static final Logger log = LoggerFactory.getLogger(GeradorPdfAdapter.class);
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    private final br.com.gestao.financeira.dominio.services.TransacaoService transacaoService;
+    private final TransacaoService transacaoService;
     private final GeradorExcelAdapter geradorExcel;
 
-    public GeradorPdfAdapter(br.com.gestao.financeira.dominio.services.TransacaoService transacaoService,
-            GeradorExcelAdapter geradorExcel) {
+    public GeradorPdfAdapter(TransacaoService transacaoService,
+                             GeradorExcelAdapter geradorExcel) {
         this.transacaoService = transacaoService;
         this.geradorExcel = geradorExcel;
     }

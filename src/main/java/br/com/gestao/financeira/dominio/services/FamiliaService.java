@@ -2,6 +2,7 @@ package br.com.gestao.financeira.dominio.services;
 
 import br.com.gestao.financeira.dominio.entity.Familia;
 import br.com.gestao.financeira.dominio.entity.Usuario;
+import br.com.gestao.financeira.dominio.enums.PerfilUsuario;
 import br.com.gestao.financeira.dominio.repository.FamiliaRepository;
 import br.com.gestao.financeira.dominio.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class FamiliaService {
 
         // Define o usuário como parte da família
         gestor.setFamilia(familia);
-        gestor.setPerfil(br.com.gestao.financeira.dominio.enums.PerfilUsuario.GESTOR);
+        gestor.setPerfil(PerfilUsuario.GESTOR);
         usuarioRepository.save(gestor);
 
         return familia;
@@ -40,7 +41,7 @@ public class FamiliaService {
                 .orElseThrow(() -> new RuntimeException("Gestor não encontrado"));
 
         // Validação de segurança: Gestor só mexe na própria família (exceto MASTER)
-        boolean isMaster = gestor.getPerfil() == br.com.gestao.financeira.dominio.enums.PerfilUsuario.MASTER;
+        boolean isMaster = gestor.getPerfil() == PerfilUsuario.MASTER;
         if (!isMaster) {
             if (gestor.getFamilia() == null || !gestor.getFamilia().getId().equals(familiaId)) {
                 throw new RuntimeException("Acesso negado: Você não tem permissão para gerenciar esta família.");
@@ -52,11 +53,11 @@ public class FamiliaService {
 
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(
-                        () -> new br.com.gestao.financeira.dominio.services.UsuarioService.UsuarioNaoEncontradoException(
+                        () -> new UsuarioService.UsuarioNaoEncontradoException(
                                 usuarioId));
 
         usuario.setFamilia(familia);
-        usuario.setPerfil(br.com.gestao.financeira.dominio.enums.PerfilUsuario.USUARIO); // Garante que é MEMBER
+        usuario.setPerfil(PerfilUsuario.USUARIO); // Garante que é MEMBER
                                                                                          // (padrão)
         usuarioRepository.save(usuario);
     }
